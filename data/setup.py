@@ -1,13 +1,46 @@
 import os
+import math
 
 import pandas as pd
 
 
+class Limits:
+    def __init__(self, lower: float = 0, upper: float = math.inf, unit: str = "g") -> None:
+        self.lower = lower
+        self.upper = upper
+        self.unit = unit
+
+    @property
+    def lower(self) -> float:
+        return self._lower
+
+    @property
+    def upper(self) -> float:
+        return self._upper
+
+    @property
+    def unit(self) -> float:
+        return self._unit
+
+    @lower.setter
+    def lower(self, value):
+        self._lower = value
+
+    @upper.setter
+    def upper(self, value):
+        self._upper = value
+
+    @unit.setter
+    def unit(self, value):
+        self._unit = value
+
+
 class Nutrient:
-    def __init__(self, name: str, key: str, unit: str) -> None:
+    def __init__(self, name: str, key: str, unit: str, limits: Limits = Limits()) -> None:
         self.name = name
         self.key = key
         self.unit = unit
+        self.limits = limits
 
     @property
     def name(self) -> str:
@@ -21,6 +54,10 @@ class Nutrient:
     def unit(self) -> str:
         return self._unit
 
+    @property
+    def limits(self) -> Limits:
+        return self._limits
+
     @name.setter
     def name(self, value):
         self._name = value
@@ -32,6 +69,10 @@ class Nutrient:
     @unit.setter
     def unit(self, value: str):
         self._unit = value
+
+    @limits.setter
+    def limits(self, value):
+        self._limits = value
 
 
 class Food:
@@ -56,43 +97,46 @@ class Food:
         self._key = value
 
 
+# absolute limits from: https://dricalculator.com/dri-chart/
+# saturated fat from: https://cdn.realfood.gov/DGA.pdf
+# ones missing from these are modeled approximately by me :)
 NUTRIENTS = [
     # energy & macronutrients
-    Nutrient("Energy", "ENERCJ Energie (Kilojoule) [kJ/100g]", "kJ/100g"),
-    Nutrient("Carbohydrates", "CHO Kohlenhydrate, verfügbar [g/100g]", "g/100g"),
-    Nutrient("Sugars", "SUGAR Zucker (Mono- und Disaccharide), gesamt [g/100g]", "g/100g"),
-    Nutrient("Fiber", "FIBT Ballaststoffe, gesamt [g/100g]", "g/100g"),
-    Nutrient("Protein", "PROT625 Protein (Nx6,25) [g/100g]", "g/100g"),
-    Nutrient("Fat", "FAT Fett [g/100g]", "g/100g"),
-    Nutrient("Saturated fat", "FASAT Fettsäuren, gesättigt, gesamt [g/100g]", "g/100g"),
+    Nutrient("Energy", "ENERCJ Energie (Kilojoule) [kJ/100g]", "kJ/100g", Limits(11000, 14000, "kJ")),
+    Nutrient("Carbohydrates", "CHO Kohlenhydrate, verfügbar [g/100g]", "g/100g", Limits(130, math.inf, "g")),
+    Nutrient("Sugars", "SUGAR Zucker (Mono- und Disaccharide), gesamt [g/100g]", "g/100g", Limits(0, 0.15, "of total energy")),
+    Nutrient("Fiber", "FIBT Ballaststoffe, gesamt [g/100g]", "g/100g", Limits(38, math.inf, "g")),
+    Nutrient("Protein", "PROT625 Protein (Nx6,25) [g/100g]", "g/100g", Limits(56, math.inf, "g")),
+    Nutrient("Fat", "FAT Fett [g/100g]", "g/100g", Limits(30, math.inf, "g")),
+    Nutrient("Saturated fat", "FASAT Fettsäuren, gesättigt, gesamt [g/100g]", "g/100g", Limits(0, 0.1, "of total energy")),
     Nutrient("Monounsaturated fat", "FAMS Fettsäure, einfach ungesättigt, gesamt [g/100g]", "g/100g"),
     Nutrient("Polyunsaturated fat", "FAPU Fettsäuren, mehrfach ungesättigt, gesamt [g/100g]", "g/100g"),
-    Nutrient("Omega-3", "FAPUN3 Fettsäuren, mehrfach ungesättigt n-3 (Omega-3), gesamt [g/100g]", "g/100g"),
-    Nutrient("Omega-6", "FAPUN6 Fettsäuren, mehrfach ungesättigt n-6 (Omega-6), gesamt [g/100g]", "g/100g"),
+    Nutrient("Omega-3", "FAPUN3 Fettsäuren, mehrfach ungesättigt n-3 (Omega-3), gesamt [g/100g]", "g/100g", Limits(1.6, math.inf, "g")),
+    Nutrient("Omega-6", "FAPUN6 Fettsäuren, mehrfach ungesättigt n-6 (Omega-6), gesamt [g/100g]", "g/100g", Limits(17, math.inf, "g")),
     # minerals
-    Nutrient("Sodium", "NA Natrium [mg/100g]", "mg/100g"),
-    Nutrient("Potassium", "K Kalium [mg/100g]", "mg/100g"),
-    Nutrient("Calcium", "CA Calcium [mg/100g]", "mg/100g"),
-    Nutrient("Magnesium", "MG Magnesium [mg/100g]", "mg/100g"),
-    Nutrient("Phosphorus", "P Phosphor [mg/100g]", "mg/100g"),
-    Nutrient("Iron", "FE Eisen [mg/100g]", "mg/100g"),
-    Nutrient("Zinc", "ZN Zink [mg/100g]", "mg/100g"),
-    Nutrient("Copper", "CU Kupfer [µg/100g]", "µg/100g"),
-    Nutrient("Manganese", "MN Mangan [µg/100g]", "µg/100g"),
-    Nutrient("Iodine", "ID Iodid [µg/100g]", "µg/100g"),
+    Nutrient("Sodium", "NA Natrium [mg/100g]", "mg/100g", Limits(1500, math.inf, "mg")),
+    Nutrient("Potassium", "K Kalium [mg/100g]", "mg/100g", Limits(3400, math.inf, "mg")),
+    Nutrient("Calcium", "CA Calcium [mg/100g]", "mg/100g", Limits(1000, 2500, "mg")),
+    Nutrient("Magnesium", "MG Magnesium [mg/100g]", "mg/100g", Limits(420, math.inf, "mg")),
+    Nutrient("Phosphorus", "P Phosphor [mg/100g]", "mg/100g", Limits(700, math.inf, "mg")),
+    Nutrient("Iron", "FE Eisen [mg/100g]", "mg/100g", Limits(8, 45, "mg")),
+    Nutrient("Zinc", "ZN Zink [mg/100g]", "mg/100g", Limits(11, 40, "mg")),
+    Nutrient("Copper", "CU Kupfer [µg/100g]", "µg/100g", Limits(900, math.inf, "mg")),
+    Nutrient("Manganese", "MN Mangan [µg/100g]", "µg/100g", Limits(2300, math.inf, "µg")),
+    Nutrient("Iodine", "ID Iodid [µg/100g]", "µg/100g", Limits(150, 1100, "µg")),
     # vitamins
-    Nutrient("Vitamin A (RAE)", "VITAA Vitamin A, Retinol-Aktivitäts-Äquivalent (RAE) [µg/100g]", "µg/100g"),
-    Nutrient("Vitamin D", "VITD Vitamin D [µg/100g]", "µg/100g"),
-    Nutrient("Vitamin E", "VITE Vitamin E (Alpha-Tocopherol) [mg/100g]", "mg/100g"),
-    Nutrient("Vitamin K", "VITK Vitamin K [µg/100g]", "µg/100g"),
-    Nutrient("Thiamine", "THIA Vitamin B1 (Thiamin) [mg/100g]", "mg/100g"),
-    Nutrient("Riboflavin", "RIBF Vitamin B2 (Riboflavin) [mg/100g]", "mg/100g"),
-    Nutrient("Niacin", "NIAEQ Niacin-Äquivalent [mg/100g]", "mg/100g"),
-    Nutrient("Vitamin B6", "VITB6 Vitamin B6 [µg/100g]", "µg/100g"),
-    Nutrient("Folate", "FOL Folat-Äquivalent [µg/100g]", "µg/100g"),
-    Nutrient("Biotin", "BIOT Biotin [µg/100g]", "µg/100g"),
-    Nutrient("Vitamin B12", "VITB12 Vitamin B12 (Cobalamine) [µg/100g]", "µg/100g"),
-    Nutrient("Vitamin C", "VITC Vitamin C [mg/100g]", "mg/100g"),
+    Nutrient("Vitamin A (RAE)", "VITAA Vitamin A, Retinol-Aktivitäts-Äquivalent (RAE) [µg/100g]", "µg/100g", Limits(900, 3000, "µg")),
+    Nutrient("Vitamin D", "VITD Vitamin D [µg/100g]", "µg/100g", Limits(15, 100, "µg")),
+    Nutrient("Vitamin E", "VITE Vitamin E (Alpha-Tocopherol) [mg/100g]", "mg/100g", Limits(15, 1000, "mg")),
+    Nutrient("Vitamin K", "VITK Vitamin K [µg/100g]", "µg/100g", Limits(120, math.inf, "µg")),
+    Nutrient("Thiamine", "THIA Vitamin B1 (Thiamin) [mg/100g]", "mg/100g", Limits(1.2, math.inf, "mg")),
+    Nutrient("Riboflavin", "RIBF Vitamin B2 (Riboflavin) [mg/100g]", "mg/100g", Limits(1.3, math.inf, "mg")),
+    Nutrient("Niacin", "NIAEQ Niacin-Äquivalent [mg/100g]", "mg/100g", Limits(16, 35, "mg")),
+    Nutrient("Vitamin B6", "VITB6 Vitamin B6 [µg/100g]", "µg/100g", Limits(1.3, 100, "mg")),
+    Nutrient("Folate", "FOL Folat-Äquivalent [µg/100g]", "µg/100g", Limits(400, math.inf, "µg")),
+    Nutrient("Biotin", "BIOT Biotin [µg/100g]", "µg/100g", Limits(30, math.inf, "µg")),
+    Nutrient("Vitamin B12", "VITB12 Vitamin B12 (Cobalamine) [µg/100g]", "µg/100g", Limits(2.4, math.inf, "µg")),
+    Nutrient("Vitamin C", "VITC Vitamin C [mg/100g]", "mg/100g", Limits(90, 2000, "mg")),
 ]
 
 FOOD_ITEMS = [
@@ -191,3 +235,13 @@ if __name__ == "__main__":
     )
     food_table.index.rename("Food", inplace=True)
     food_table.to_csv(os.path.join(str(os.path.dirname(__file__)), "food.csv"))
+
+    limit_table = pd.DataFrame(
+        index=[n.name for n in NUTRIENTS],
+        data={
+            "lower": [n.limits.lower for n in NUTRIENTS],
+            "upper": [n.limits.upper for n in NUTRIENTS],
+            "unit": [n.limits.unit for n in NUTRIENTS],
+        },
+    )
+    limit_table.to_csv(os.path.join(str(os.path.dirname(__file__)), "limits.csv"))
