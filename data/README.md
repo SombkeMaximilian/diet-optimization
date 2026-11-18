@@ -6,9 +6,8 @@ Run `download.sh` followed by `setup.sh`. Alternatively, download `BLS_4_0_Daten
 from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory as
 `BLS_4_0_2025_DE/BLS_4_0_Daten_2025_DE.xlsx` and then run `setup.py`. The resulting dataset will be saved as:
 
-- `food.csv`: nutrient composition of selected food items
+- `food.csv`: example prices, mass per item, and nutrient composition (fluids were converted to weight approximately)
 - `limits.csv`: nutrient lower and upper limits
-- `prices.csv`: example prices for each food item with amounts in gram (fluids were converted approximately).
 
 ## Nutrients
 

@@ -258,14 +258,23 @@ FOOD_ITEMS = [
 if __name__ == "__main__":
     data_path = os.path.join(str(os.path.dirname(__file__)), "BLS_4_0_2025_DE/BLS_4_0_Daten_2025_DE.xlsx")
     bls = pd.read_excel(data_path, header=0, index_col="BLS Code", dtype=str)
-    food_table = (
+    nutrient_table = (
         bls.loc[[f.key for f in FOOD_ITEMS]]
             .loc[:, [n.key for n in NUTRIENTS]]
             .apply(lambda x: pd.to_numeric(x, errors="coerce"))
             .fillna(0)
             .rename(index={f.key: f.name for f in FOOD_ITEMS}, columns={n.key: f"{n.name} [{n.unit}]" for n in NUTRIENTS})
     )
-    food_table.index.rename("Item", inplace=True)
+    nutrient_table.index.rename("Item", inplace=True)
+    price_table = pd.DataFrame(
+        index=[f.name for f in FOOD_ITEMS],
+        data={
+            "Price [Euro]": [f.price.euro for f in FOOD_ITEMS],
+            "Amount [g]": [f.price.grams for f in FOOD_ITEMS],
+        }
+    )
+    price_table.index.rename("Item", inplace=True)
+    food_table = pd.concat([price_table, nutrient_table], axis=1)
     food_table.to_csv(os.path.join(str(os.path.dirname(__file__)), "food.csv"))
 
     limit_table = pd.DataFrame(
@@ -278,13 +287,3 @@ if __name__ == "__main__":
     )
     limit_table.index.rename("Nutrient", inplace=True)
     limit_table.to_csv(os.path.join(str(os.path.dirname(__file__)), "limits.csv"))
-
-    price_table = pd.DataFrame(
-        index=[f.name for f in FOOD_ITEMS],
-        data={
-            "Price": [f.price.euro for f in FOOD_ITEMS],
-            "Amount [g]": [f.price.grams for f in FOOD_ITEMS],
-        }
-    )
-    price_table.index.rename("item", inplace=True)
-    price_table.to_csv(os.path.join(str(os.path.dirname(__file__)), "prices.csv"))
