@@ -9,22 +9,16 @@ fn main() -> Result<(), Error> {
     let data_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("data");
     let data = data::read_data(&data_dir)?;
 
-    let lp_plan = model::solve(&data, false)?;
+    let lp_plan = model::Plan::new(&data, false)?;
     println!("LP solution");
     println!("-----------");
-    for p in &lp_plan.purchases {
-        println!("{}: {:.3} packs ({:.0} g)", p.name, p.packs, p.grams);
-    }
-    println!("Cost: {:.2}€", lp_plan.cost);
+    println!("{lp_plan}");
     println!();
 
-    let ilp_plan = model::solve(&data, true)?;
+    let ilp_plan = model::Plan::new(&data, true)?;
     println!("ILP solution");
     println!("------------");
-    for p in &ilp_plan.purchases {
-        println!("{}: {:.0} packs ({:.0} g)", p.name, p.packs, p.grams);
-    }
-    println!("Cost: {:.2}€", ilp_plan.cost);
+    println!("{ilp_plan}");
 
     Ok(())
 }

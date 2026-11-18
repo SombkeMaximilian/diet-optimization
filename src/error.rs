@@ -1,12 +1,20 @@
 use std::fmt;
 
+/// Errors that can occur in this program.
 #[derive(Debug)]
 pub enum Error {
+    /// CSV parsing errors.
     Csv(csv::Error),
+    /// LP solver errors.
     Solver(good_lp::ResolutionError),
+    /// A header is missing its unit.
     MissingUnit(String),
+    /// A nutrient expected in the data is missing.
     MissingNutrient(String),
+    /// A nutrient without an energy density was attempted to be used in a
+    /// context where that is required.
     NoEnergyDensity(String),
+    /// A field contains an invalid value.
     InvalidNumber { field: &'static str, value: String },
 }
 
