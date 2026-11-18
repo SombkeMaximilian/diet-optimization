@@ -12,3 +12,4 @@
 
 # Setup script
 !setup.py
+!requirements.txt
