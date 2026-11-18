@@ -75,10 +75,33 @@ class Nutrient:
         self._limits = value
 
 
+class PriceInfo:
+    def __init__(self, euro: float, grams: float) -> None:
+        self.euro = euro
+        self.grams = grams
+
+    @property
+    def euro(self) -> float:
+        return self._euro
+
+    @property
+    def grams(self) -> float:
+        return self._grams
+
+    @euro.setter
+    def euro(self, value):
+        self._euro = value
+
+    @grams.setter
+    def grams(self, value):
+        self._grams = value
+
+
 class Food:
-    def __init__(self, name: str, key: str) -> None:
+    def __init__(self, name: str, key: str, price: PriceInfo) -> None:
         self.name = name
         self.key = key
+        self.price = price
 
     @property
     def name(self) -> str:
@@ -88,6 +111,10 @@ class Food:
     def key(self) -> str:
         return self._key
 
+    @property
+    def price(self) -> PriceInfo:
+        return self._price
+
     @name.setter
     def name(self, value):
         self._name = value
@@ -95,6 +122,10 @@ class Food:
     @key.setter
     def key(self, value):
         self._key = value
+
+    @price.setter
+    def price(self, value):
+        self._price = value
 
 
 # absolute limits from: https://dricalculator.com/dri-chart/
@@ -139,87 +170,88 @@ NUTRIENTS = [
     Nutrient("Vitamin C", "VITC Vitamin C [mg/100g]", "mg/100g", Limits(90, 2000, "mg")),
 ]
 
+# prices from various discounters (Rewe, Edeka, etc.) by rough matches :)
 FOOD_ITEMS = [
     # grains and starches
-    Food("White bread", "B311000"),
-    Food("Whole-grain bread", "B121000"),
-    Food("Rye-wheat bread", "B271000"),
-    Food("Egg pasta", "E432000"),
-    Food("Whole-grain pasta (no egg)", "E510000"),
-    Food("White rice", "C352000"),
-    Food("Oat roll", "B531000"),
-    Food("Potatoes", "K120100"),
-    Food("Sweetened cereal", "C534500"),
-    Food("Sweetened whole-grain cereal", "C539100"),
+    Food("White bread", "B311000", PriceInfo(2.49, 750)),
+    Food("Whole-grain bread", "B121000", PriceInfo(2.99, 750)),
+    Food("Rye-wheat bread", "B271000", PriceInfo(2.99, 750)),
+    Food("Egg pasta", "E432000", PriceInfo(1.19, 500)),
+    Food("Whole-grain pasta (no egg)", "E510000", PriceInfo(0.85, 500)),
+    Food("White rice", "C352000", PriceInfo(2.39, 500)),
+    Food("Oat roll", "B531000", PriceInfo(600, 5.89)),
+    Food("Potatoes", "K120100", PriceInfo(2000, 2.59)),
+    Food("Sweetened cereal", "C534500", PriceInfo(2.79, 375)),
+    Food("Sweetened whole-grain cereal", "C539100", PriceInfo(2.99, 300)),
     # meats and sausages
-    Food("Roast chicken", "Y560322"),
-    Food("Minced pork/beef meat", "U040182"),
-    Food("Beef steak", "Y184512"),
-    Food("Pork loin", "W510082"),
-    Food("Pork Sausage", "U065100"),
-    Food("Ham", "W164000"),
-    Food("Salami", "W140000"),
-    Food("Lamb liver", "V535182"),
+    Food("Roast chicken", "Y560322", PriceInfo(10.68, 1200)),
+    Food("Minced pork/beef meat", "U040182", PriceInfo(5.79, 400)),
+    Food("Beef steak", "Y184512", PriceInfo(7.38, 200)),
+    Food("Pork loin", "W510082", PriceInfo(7.22, 560)),
+    Food("Pork Sausage", "U065100", PriceInfo(2.78, 200)),
+    Food("Ham", "W164000", PriceInfo(2.39, 100)),
+    Food("Salami", "W140000", PriceInfo(3.69, 80)),
+    Food("Veal liver", "V532100", PriceInfo(3.59, 150)),
     # fish
-    Food("Salmon", "T410082"),
-    Food("Cod", "T204162"),
-    Food("Herring", "T102162"),
-    Food("Mackerel", "T107182"),
-    Food("Canned tuna", "T121902"),
+    Food("Salmon", "T410082", PriceInfo(3.24, 150)),
+    Food("Cod", "T204162", PriceInfo(7.49, 150)),
+    Food("Herring", "T102162", PriceInfo(3.69, 200)),
+    Food("Mackerel", "T107182", PriceInfo(5.47, 275)),
+    Food("Canned tuna", "T121902", PriceInfo(2.99, 120)),
     # eggs and dairy
-    Food("Eggs", "Y740162"),
-    Food("Cow milk, skimmed", "M111100"),
-    Food("Cow milk, whole", "M111300"),
-    Food("Yogurt, plain", "M141300"),
-    Food("Cheese, hard", "M402600"),
-    Food("Quark", "M713700"),
-    Food("Butter", "Q6A4000"),
-    Food("Cream cheese", "M710800"),
-    Food("Butterkäse cheese", "M302600"),
+    Food("Eggs", "Y740162", PriceInfo(3.49, 300)),
+    Food("Cow milk, skimmed", "M111100", PriceInfo(1.49, 1000)),
+    Food("Cow milk, whole", "M111300", PriceInfo(1.19, 1000)),
+    Food("Yogurt, plain", "M141300", PriceInfo(1.99, 500)),
+    Food("Cheese, hard", "M402600", PriceInfo(1.29, 100)),
+    Food("Quark", "M713700", PriceInfo(1.45, 185)),
+    Food("Butter", "Q6A4000", PriceInfo(1.99, 125)),
+    Food("Cream cheese", "M710800", PriceInfo(1.11, 195)),
+    Food("Butterkäse cheese", "M302600", PriceInfo(0.99, 100)),
     # vegan alternatives
-    Food("Oat milk (fortified)", "C660200"),
-    Food("Soy milk (fortified)", "H841400"),
-    Food("Almond milk (fortified)", "H800400"),
-    Food("Coconut milk", "H154000"),
-    Food("Soy yogurt (fortified)", "H844500"),
-    Food("Vegan cheese (fortified)", "Q590100"),
+    Food("Oat milk (fortified)", "C660200", PriceInfo(2.49, 1000)),
+    Food("Soy milk (fortified)", "H841400", PriceInfo(2.49, 1000)),
+    Food("Almond milk (fortified)", "H800400", PriceInfo(2.99, 1000)),
+    Food("Coconut milk", "H154000", PriceInfo(2.99, 1000)),
+    Food("Soy yogurt (fortified)", "H844500", PriceInfo(2.19, 400)),
+    Food("Vegan cheese (fortified)", "Q590100", PriceInfo(2.49, 140)),
     # legumes, nuts and seeds
-    Food("Lentils", "H725100"),
-    Food("Haricot beans", "H739400"),
-    Food("Chickpeas", "X574212"),
-    Food("Tofu", "H861000"),
-    Food("Peanuts", "H110600"),
-    Food("Almonds", "S465000"),
-    Food("Walnuts", "H120100"),
-    Food("Sunflower seeds", "H430100"),
-    Food("Chia seeds", "H480100"),
+    Food("Lentils", "H725100", PriceInfo(2.49, 400)),
+    Food("Haricot beans", "H739400", PriceInfo(1.49, 500)),
+    Food("Chickpeas", "X574212", PriceInfo(1.49, 500)),
+    Food("Tofu", "H861000", PriceInfo(3.29, 400)),
+    Food("Peanuts", "H110600", PriceInfo(2.49, 400)),
+    Food("Almonds", "S465000", PriceInfo(4.49, 200)),
+    Food("Walnuts", "H120100", PriceInfo(3.79, 150)),
+    Food("Sunflower seeds", "H430100", PriceInfo(1.89, 200)),
+    Food("Chia seeds", "H480100", PriceInfo(4.89, 250)),
     # vegetables
-    Food("Broccoli", "G312100"),
-    Food("Spinach", "G211100"),
-    Food("Curly kale", "G322100"),
-    Food("Carrots", "G620100"),
-    Food("Tomatoes", "G561100"),
-    Food("Onion", "G480100"),
-    Food("Garlic", "G490100"),
-    Food("Bell pepper (red)", "G543100"),
-    Food("Frozen peas", "G760200"),
-    Food("Button mushrooms", "K701100"),
+    Food("Broccoli", "G312100", PriceInfo(1.99, 500)),
+    Food("Spinach", "G211100", PriceInfo(2.29, 500)),
+    Food("Curly kale", "G322100", PriceInfo(2.39, 1000)),
+    Food("Carrots", "G620100", PriceInfo(1.39, 1000)),
+    Food("Tomatoes", "G561100", PriceInfo(0.30, 120)),
+    Food("Onion", "G480100", PriceInfo(1.59, 1500)),
+    Food("Garlic", "G490100", PriceInfo(0.83, 70)),
+    Food("Bell pepper (red)", "G543100", PriceInfo(2.29, 500)),
+    Food("Frozen peas", "G760200", PriceInfo(2.59, 1000)),
+    Food("Button mushrooms", "K701100", PriceInfo(2.99, 250)),
     # fruits
-    Food("Apples", "F110100"),
-    Food("Bananas", "F503100"),
-    Food("Oranges", "F603100"),
-    Food("Blueberries", "F304100"),
-    Food("Dried apricot", "F201400"),
+    Food("Apples", "F110100", PriceInfo(2.49, 550)),
+    Food("Bananas", "F503100", PriceInfo(0.50, 200)),
+    Food("Oranges", "F603100", PriceInfo(2.99, 2000)),
+    Food("Blueberries", "F304100", PriceInfo(4.49, 300)),
+    Food("Dried apricot", "F201400", PriceInfo(4.99, 200)),
     # oils and fats
-    Food("Olive oil", "Q120000"),
-    Food("Rapeseed oil", "Q180000"),
-    Food("Beef tallow", "Q890000"),
+    Food("Olive oil", "Q120000", PriceInfo(9.99, 450)),
+    Food("Rapeseed oil", "Q180000", PriceInfo(4.99, 675)),
+    Food("Beef tallow", "Q890000", PriceInfo(7.79, 200)),
     # drinks
-    Food("Cola", "N330000"),
-    Food("Cola (zero sugar)", "N331000"),
-    Food("Orange juice", "F603600"),
-    Food("Apple juice", "F110600"),
-    Food("Coffee", "N410100"),
+    Food("Cola", "N330000", PriceInfo(1.89, 1000)),
+    Food("Cola (zero sugar)", "N331000", PriceInfo(1.89, 1000)),
+    Food("Orange juice", "F603600", PriceInfo(1.79, 1000)),
+    Food("Apple juice", "F110600", PriceInfo(2.19, 700)),
+    Food("Coffee", "N410100", PriceInfo(14.99, 1000)),
 ]
 
 
@@ -233,15 +265,26 @@ if __name__ == "__main__":
             .fillna(0)
             .rename(index={f.key: f.name for f in FOOD_ITEMS}, columns={n.key: f"{n.name} [{n.unit}]" for n in NUTRIENTS})
     )
-    food_table.index.rename("Food", inplace=True)
+    food_table.index.rename("Item", inplace=True)
     food_table.to_csv(os.path.join(str(os.path.dirname(__file__)), "food.csv"))
 
     limit_table = pd.DataFrame(
         index=[n.name for n in NUTRIENTS],
         data={
-            "lower": [n.limits.lower for n in NUTRIENTS],
-            "upper": [n.limits.upper for n in NUTRIENTS],
-            "unit": [n.limits.unit for n in NUTRIENTS],
+            "Lower": [n.limits.lower for n in NUTRIENTS],
+            "Upper": [n.limits.upper for n in NUTRIENTS],
+            "Unit": [n.limits.unit for n in NUTRIENTS],
         },
     )
+    limit_table.index.rename("Nutrient", inplace=True)
     limit_table.to_csv(os.path.join(str(os.path.dirname(__file__)), "limits.csv"))
+
+    price_table = pd.DataFrame(
+        index=[f.name for f in FOOD_ITEMS],
+        data={
+            "Price": [f.price.euro for f in FOOD_ITEMS],
+            "Amount [g]": [f.price.grams for f in FOOD_ITEMS],
+        }
+    )
+    price_table.index.rename("item", inplace=True)
+    price_table.to_csv(os.path.join(str(os.path.dirname(__file__)), "prices.csv"))

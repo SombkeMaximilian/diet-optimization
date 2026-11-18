@@ -72,7 +72,7 @@ from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory 
 - Pork Sausage
 - Ham
 - Salami
-- Lamb liver
+- Veal liver
 
 ## Fish (5)
 
