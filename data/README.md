@@ -1,12 +1,18 @@
-# Contents
+# Data
+
+## Generate
 
 Run `download.sh` followed by `setup.sh`. Alternatively, download `BLS_4_0_Daten_2025_DE.xlsx`
 from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory as
-`BLS_4_0_2025_DE/BLS_4_0_Daten_2025_DE.xlsx` and then run `setup.py`.
+`BLS_4_0_2025_DE/BLS_4_0_Daten_2025_DE.xlsx` and then run `setup.py`. The resulting dataset will be saved as:
 
-# Nutrients
+- `food.csv`: nutrient composition of selected food items
+- `limits.csv`: nutrient lower and upper limits
+- `prices.csv`: example prices for each food item with amounts in gram (fluids were converted approximately).
 
-## Energy and Macronutrients
+## Nutrients
+
+### Energy and Macronutrients
 
 - Energy
 - Carbohydrates
@@ -20,7 +26,7 @@ from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory 
 - Omega-3
 - Omega-6
 
-## Minerals
+### Minerals
 
 - Sodium 
 - Potassium
@@ -33,7 +39,7 @@ from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory 
 - Manganese 
 - Iodine
 
-## Vitamins
+### Vitamins
 
 - Vitamin A
 - Vitamin D
@@ -48,9 +54,9 @@ from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory 
 - Biotin
 - Vitamin C
 
-# Food Items
+## Food Items
 
-## Grains and Starches (10)
+### Grains and Starches (10)
 
 - White bread
 - Whole-grain bread
@@ -63,7 +69,7 @@ from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory 
 - Cereal
 - Whole-grain cereal
 
-## Meats and Sausages (8)
+### Meats and Sausages (8)
 
 - Roast chicken
 - Minced meat
@@ -74,7 +80,7 @@ from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory 
 - Salami
 - Veal liver
 
-## Fish (5)
+### Fish (5)
 
 - Salmon
 - Cod
@@ -82,7 +88,7 @@ from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory 
 - Mackerel
 - Canned tuna
 
-## Eggs and Dairy (9)
+### Eggs and Dairy (9)
 
 - Eggs
 - Cow milk, skimmed
@@ -94,7 +100,7 @@ from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory 
 - Cream cheese
 - Cheese, processed or fresh
 
-## Vegan Alternatives (6)
+### Vegan Alternatives (6)
 
 - Oat milk (fortified)
 - Soy milk (fortified)
@@ -103,7 +109,7 @@ from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory 
 - Soy yogurt (fortified)
 - Soy quark (fortified)
 
-## Legumes, Nuts and Seeds (9)
+### Legumes, Nuts and Seeds (9)
 
 - Lentils
 - Green beans
@@ -115,7 +121,7 @@ from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory 
 - Sunflower seeds
 - Chia seeds
 
-## Vegetables (10)
+### Vegetables (10)
 
 - Broccoli
 - Spinach
@@ -128,7 +134,7 @@ from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory 
 - Frozen peas
 - Button mushrooms
 
-## Fruits (5)
+### Fruits (5)
 
 - Apples
 - Bananas
@@ -136,13 +142,13 @@ from https://doi.org/10.25826/Data20251217-134202-0, place it in this directory 
 - Blueberries
 - Dried apricot
 
-## Oils and fats (3)
+### Oils and fats (3)
 
 - Olive oil
 - Rapeseed oil
 - Beef tallow
 
-## Drinks (5)
+### Drinks (5)
 
 - Cola
 - Cola (zero sugar)
