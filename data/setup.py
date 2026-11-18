@@ -163,7 +163,7 @@ NUTRIENTS = [
     Nutrient("Thiamine", "THIA Vitamin B1 (Thiamin) [mg/100g]", "mg/100g", Limits(1.2, math.inf, "mg")),
     Nutrient("Riboflavin", "RIBF Vitamin B2 (Riboflavin) [mg/100g]", "mg/100g", Limits(1.3, math.inf, "mg")),
     Nutrient("Niacin", "NIAEQ Niacin-Äquivalent [mg/100g]", "mg/100g", Limits(16, 35, "mg")),
-    Nutrient("Vitamin B6", "VITB6 Vitamin B6 [µg/100g]", "µg/100g", Limits(1.3, 100, "mg")),
+    Nutrient("Vitamin B6", "VITB6 Vitamin B6 [µg/100g]", "µg/100g", Limits(1300, 100000, "µg")),
     Nutrient("Folate", "FOL Folat-Äquivalent [µg/100g]", "µg/100g", Limits(400, math.inf, "µg")),
     Nutrient("Biotin", "BIOT Biotin [µg/100g]", "µg/100g", Limits(30, math.inf, "µg")),
     Nutrient("Vitamin B12", "VITB12 Vitamin B12 (Cobalamine) [µg/100g]", "µg/100g", Limits(2.4, math.inf, "µg")),
