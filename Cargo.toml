@@ -1,0 +1,13 @@
+[package]
+name = "diet-optimization"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+csv = { version = "1.4.0" }
+serde = { version = "1.0.229", features = ["derive"] }
+good_lp = { version = "1.15.3", features = ["microlp"] }
+
+[profile.release]
+codegen-units = 1
+lto = "fat"
