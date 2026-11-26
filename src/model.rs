@@ -1,10 +1,10 @@
-use std::fmt;
-use std::fmt::Formatter;
 use crate::data::{Data, ENERGY, FoodItem, Limit, Unit};
 use crate::error::Error;
 use good_lp::{
     Constraint, Expression, ProblemVariables, Solution, SolverModel, Variable, microlp, variable,
 };
+use std::fmt;
+use std::fmt::Formatter;
 
 /// A purchase we make.
 #[derive(Clone, PartialEq, Debug)]
@@ -45,18 +45,23 @@ impl fmt::Display for Plan {
 
 impl Plan {
     /// Creates a purchasing plan by solving the (integer) linear program.
-    pub fn new(data: &Data, integral: bool) -> Result<Self, Error> {
+    pub fn new(data: &Data, days: u32, integral: bool) -> Result<Self, Error> {
         let Data { limits, food_items } = data;
+        let days = days as f64;
 
         let mut vars = ProblemVariables::new();
-        let var = if integral { variable().integer().min(0) } else { variable().min(0) };
+        let var = if integral {
+            variable().integer().min(0)
+        } else {
+            variable().min(0)
+        };
         let packs = vars.add_vector(var, food_items.len());
         let cost = weighted_sum(&packs, food_items, |f| f.price);
         let energy = weighted_sum(&packs, food_items, |f| f.per_pack(ENERGY));
 
         let mut model = vars.minimise(&cost).using(microlp);
         for limit in limits {
-            for constraint in limit_constraints(limit, &packs, food_items, &energy)? {
+            for constraint in limit_constraints(limit, days, &packs, food_items, &energy)? {
                 model.add_constraint(constraint);
             }
         }
@@ -78,6 +83,16 @@ impl Plan {
             integral,
             purchases,
         })
+    }
+
+    /// Creates a purchasing plan by solving the linear program.
+    pub fn fractional(data: &Data, days: u32) -> Result<Self, Error> {
+        Self::new(data, days, false)
+    }
+
+    /// Creates a purchasing plan by solving the integer linear program.
+    pub fn integral(data: &Data, days: u32) -> Result<Self, Error> {
+        Self::new(data, days, true)
     }
 }
 
@@ -107,6 +122,7 @@ fn weighted_sum(
 /// Generates the limit constraints.
 fn limit_constraints(
     limit: &Limit,
+    days: f64,
     packs: &[Variable],
     foods: &[FoodItem],
     energy: &Expression,
@@ -129,10 +145,10 @@ fn limit_constraints(
 
     let mut constraints = Vec::new();
     if limit.lower > 0.0 {
-        constraints.push(amount.clone().geq(scale.clone() * limit.lower));
+        constraints.push(amount.clone().geq(scale.clone() * limit.lower * days));
     }
     if limit.upper.is_finite() {
-        constraints.push(amount.leq(scale * limit.upper));
+        constraints.push(amount.leq(scale * limit.upper * days));
     }
 
     Ok(constraints)

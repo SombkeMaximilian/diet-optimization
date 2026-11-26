@@ -96,7 +96,10 @@ pub fn read_data(dir: &Path) -> Result<Data, Error> {
         }
     }
 
-    Ok(Data { limits, food_items: foods })
+    Ok(Data {
+        limits,
+        food_items: foods,
+    })
 }
 
 /// Reads the nutrient limits from the path pointing to `limits.csv`.

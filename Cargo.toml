@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+clap = { version = "4.6.10", features = ["derive"] }
 csv = { version = "1.4.0" }
 serde = { version = "1.0.229", features = ["derive"] }
 good_lp = { version = "1.15.3", features = ["microlp"] }
