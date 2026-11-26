@@ -152,7 +152,7 @@ NUTRIENTS = [
     Nutrient("Phosphorus", "P Phosphor [mg/100g]", "mg/100g", Limits(700, math.inf, "mg")),
     Nutrient("Iron", "FE Eisen [mg/100g]", "mg/100g", Limits(8, 45, "mg")),
     Nutrient("Zinc", "ZN Zink [mg/100g]", "mg/100g", Limits(11, 40, "mg")),
-    Nutrient("Copper", "CU Kupfer [µg/100g]", "µg/100g", Limits(900, math.inf, "mg")),
+    Nutrient("Copper", "CU Kupfer [µg/100g]", "µg/100g", Limits(900, math.inf, "µg")),
     Nutrient("Manganese", "MN Mangan [µg/100g]", "µg/100g", Limits(2300, math.inf, "µg")),
     Nutrient("Iodine", "ID Iodid [µg/100g]", "µg/100g", Limits(150, 1100, "µg")),
     # vitamins
