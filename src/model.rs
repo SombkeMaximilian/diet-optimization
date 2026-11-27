@@ -4,7 +4,6 @@ use good_lp::{
     Constraint, Expression, ProblemVariables, Solution, SolverModel, Variable, microlp, variable,
 };
 use std::fmt;
-use std::fmt::Formatter;
 
 /// A purchase we make.
 #[derive(Clone, PartialEq, Debug)]
@@ -29,7 +28,7 @@ pub struct Plan {
 }
 
 impl fmt::Display for Plan {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         for p in self.purchases.iter() {
             if self.integral {
                 writeln!(f, "{}: {:.0} packs ({:.0} g)", p.name, p.packs, p.grams)?;
